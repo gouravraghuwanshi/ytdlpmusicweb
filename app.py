@@ -20,6 +20,7 @@ def search_videos(query, max_results=5):
         'quiet': True,
         'no_warnings': True,
         'extract_flat': True,
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
     }
     
     try:
@@ -77,6 +78,12 @@ def get_audio_info(url):
     ydl_opts = {
         'format': 'bestaudio[ext=m4a]/bestaudio[ext=mp3]/bestaudio[ext=webm]/bestaudio',
         'quiet': True,
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'extractor_args': {
+            'youtube': {
+                'skip': ['dash', 'hls']
+            }
+        }
     }
 
     try:
@@ -112,6 +119,7 @@ def download_audio(url):
             'preferredquality': '192',
         }],
         'outtmpl': cache_path[:-4],  # Remove .mp3 extension as it will be added by yt-dlp
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
     }
 
     try:
