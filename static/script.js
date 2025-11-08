@@ -291,7 +291,7 @@ async function performSearch() {
     switchView('search');
 
     try {
-        const response = await fetch(`${API_BASE_URL}/search`, {
+        const response = await fetch('/search', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ query })
@@ -368,7 +368,7 @@ async function playVideo(url, title, thumbnail, id) {
     document.querySelector('.app-container').classList.add('player-active');
 
     try {
-        const response = await fetch(`${API_BASE_URL}/play-audio`, {
+        const response = await fetch('/play-audio', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ url, mode: currentMode })
@@ -381,7 +381,7 @@ async function playVideo(url, title, thumbnail, id) {
                 audioPlayer.src = data.stream_url;
                 playerStatus.textContent = 'Streaming';
             } else if (data.type === 'cached' || data.type === 'download') {
-                audioPlayer.src = `${API_BASE_URL}/play/${data.file}`;
+                audioPlayer.src = `/play/${data.file}`;
                 playerStatus.textContent = data.type === 'cached' ? 'Playing from cache' : 'Downloaded';
             }
             
@@ -477,7 +477,7 @@ async function toggleLikeTrack(track) {
     try {
         if (existingIndex >= 0) {
             // Remove from liked songs
-            const response = await fetch(`${API_BASE_URL}/liked-songs`, {
+            const response = await fetch('/liked-songs', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: track.id })
@@ -489,7 +489,7 @@ async function toggleLikeTrack(track) {
             }
         } else {
             // Add to liked songs
-            const response = await fetch(`${API_BASE_URL}/liked-songs`, {
+            const response = await fetch('/liked-songs', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ song: track })
@@ -510,7 +510,7 @@ async function toggleLikeTrack(track) {
 
 async function addToRecentTracks(track) {
     try {
-        const response = await fetch(`${API_BASE_URL}/recent-tracks`, {
+        const response = await fetch('/recent-tracks', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ track })
@@ -636,7 +636,7 @@ downloadBtn.addEventListener('click', async () => {
     showNotification('Starting download...', 'info');
     
     try {
-        const response = await fetch(`${API_BASE_URL}/play-audio`, {
+        const response = await fetch('/play-audio', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ url: currentVideoUrl, mode: 'download' })
@@ -652,7 +652,7 @@ downloadBtn.addEventListener('click', async () => {
         if (data.success) {
             // Create download link
             const link = document.createElement('a');
-            link.href = `${API_BASE_URL}/play/${data.file}`;
+            link.href = `/play/${data.file}`;
             link.download = data.file;
             link.style.display = 'none';
             document.body.appendChild(link);
@@ -807,7 +807,7 @@ function showLibraryView() {
 
 async function showLikedSongsView() {
     try {
-        const response = await fetch(`${API_BASE_URL}/liked-songs`);
+        const response = await fetch('/liked-songs');
         const data = await response.json();
         
         const content = `
@@ -838,7 +838,7 @@ async function showLikedSongsView() {
 
 async function showRecentTracksView() {
     try {
-        const response = await fetch(`${API_BASE_URL}/recent-tracks`);
+        const response = await fetch('/recent-tracks');
         const data = await response.json();
         
         const content = `
@@ -892,7 +892,7 @@ async function createPlaylist() {
     }
     
     try {
-        const response = await fetch(`${API_BASE_URL}/playlists`, {
+        const response = await fetch('/playlists', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name })
@@ -913,7 +913,7 @@ async function createPlaylist() {
 
 async function loadPlaylists() {
     try {
-        const response = await fetch(`${API_BASE_URL}/playlists`);
+        const response = await fetch('/playlists');
         const data = await response.json();
         
         const container = document.getElementById('playlistsList');
