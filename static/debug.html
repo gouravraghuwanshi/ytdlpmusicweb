@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AudioStream Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #121212; color: white; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #333; border-radius: 5px; }
+        .success { color: #1db954; }
+        .error { color: #ff4444; }
+        button { padding: 10px 20px; margin: 5px; background: #1db954; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        input { padding: 8px; margin: 5px; background: #333; color: white; border: 1px solid #555; border-radius: 3px; }
+        #results { margin-top: 20px; padding: 10px; background: #1a1a1a; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>AudioStream Debug Page</h1>
+    
+    <div class="test-section">
+        <h3>Server Connection Test</h3>
+        <button onclick="testServer()">Test Server</button>
+        <div id="serverStatus"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Search Test</h3>
+        <input type="text" id="searchQuery" placeholder="Enter search query" value="test music">
+        <button onclick="testSearch()">Test Search</button>
+        <div id="searchStatus"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Static Files Test</h3>
+        <button onclick="testStaticFiles()">Test CSS/JS Loading</button>
+        <div id="staticStatus"></div>
+    </div>
+    
+    <div id="results"></div>
+
+    <script>
+        async function testServer() {
+            const status = document.getElementById('serverStatus');
+            status.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('/test');
+                const data = await response.json();
+                status.innerHTML = `<span class="success">✓ Server is working: ${data.message}</span>`;
+            } catch (error) {
+                status.innerHTML = `<span class="error">✗ Server error: ${error.message}</span>`;
+            }
+        }
+        
+        async function testSearch() {
+            const status = document.getElementById('searchStatus');
+            const query = document.getElementById('searchQuery').value;
+            status.innerHTML = 'Testing search...';
+            
+            try {
+                const response = await fetch('/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+                
+                const data = await response.json();
+                if (data.results && data.results.length > 0) {
+                    status.innerHTML = `<span class="success">✓ Search working: Found ${data.results.length} results</span>`;
+                    document.getElementById('results').innerHTML = 
+                        '<h4>Search Results:</h4>' + 
+                        data.results.map(r => `<div>• ${r.title}</div>`).join('');
+                } else {
+                    status.innerHTML = `<span class="error">✗ No results found</span>`;
+                }
+            } catch (error) {
+                status.innerHTML = `<span class="error">✗ Search error: ${error.message}</span>`;
+            }
+        }
+        
+        async function testStaticFiles() {
+            const status = document.getElementById('staticStatus');
+            status.innerHTML = 'Testing static files...';
+            
+            try {
+                // Test CSS
+                const cssResponse = await fetch('/style.css');
+                const cssOk = cssResponse.ok;
+                
+                // Test JS
+                const jsResponse = await fetch('/script.js');
+                const jsOk = jsResponse.ok;
+                
+                if (cssOk && jsOk) {
+                    status.innerHTML = `<span class="success">✓ Static files loading correctly</span>`;
+                } else {
+                    status.innerHTML = `<span class="error">✗ Static files issue - CSS: ${cssOk ? 'OK' : 'FAIL'}, JS: ${jsOk ? 'OK' : 'FAIL'}</span>`;
+                }
+            } catch (error) {
+                status.innerHTML = `<span class="error">✗ Static files error: ${error.message}</span>`;
+            }
+        }
+        
+        // Auto-run server test on load
+        window.onload = () => {
+            testServer();
+        };
+    </script>
+</body>
+</html>

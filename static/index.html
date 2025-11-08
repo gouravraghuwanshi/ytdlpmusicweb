@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AudioStream - Your Music Universe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <h1>Audio<span>Stream</span></h1>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-item active" data-view="home">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </div>
+                    <div class="nav-item" data-view="search">
+                        <i class="fas fa-search"></i>
+                        <span>Search</span>
+                    </div>
+                    <div class="nav-item" data-view="library">
+                        <i class="fas fa-book"></i>
+                        <span>Your Library</span>
+                    </div>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-item" data-view="create">
+                        <i class="fas fa-plus-square"></i>
+                        <span>Create Playlist</span>
+                    </div>
+                    <div class="nav-item" data-view="liked">
+                        <i class="fas fa-heart"></i>
+                        <span>Liked Songs</span>
+                    </div>
+                    <div class="nav-item" data-view="recent">
+                        <i class="fas fa-clock"></i>
+                        <span>Recently Played</span>
+                    </div>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                    <span>Dark Mode</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="nav-buttons">
+                    <button class="nav-btn" id="backBtn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="nav-btn" id="forwardBtn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="search-container">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="What do you want to listen to?">
+                        <button id="searchBtn" class="search-btn">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="user-menu">
+                    <div class="mode-selector">
+                        <button class="mode-btn active" data-mode="stream" title="Stream Mode">
+                            <i class="fas fa-play-circle"></i>
+                        </button>
+                        <button class="mode-btn" data-mode="download" title="Download Mode">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- Home View -->
+                <div id="homeView" class="view active">
+                    <div class="hero-section">
+                        <div class="hero-content">
+                            <h1 class="hero-title">Good evening</h1>
+                            <p class="hero-subtitle">Discover and stream your favorite music</p>
+                        </div>
+                        <div class="hero-gradient"></div>
+                    </div>
+                    
+                    <div class="quick-picks">
+                        <h2 class="section-title">Quick picks</h2>
+                        <div class="quick-picks-grid" id="quickPicks">
+                            <div class="quick-pick-item" onclick="quickSearch('trending music 2024')">
+                                <div class="quick-pick-icon">
+                                    <i class="fas fa-fire"></i>
+                                </div>
+                                <span>Trending Now</span>
+                            </div>
+                            <div class="quick-pick-item" onclick="quickSearch('chill music')">
+                                <div class="quick-pick-icon">
+                                    <i class="fas fa-leaf"></i>
+                                </div>
+                                <span>Chill Vibes</span>
+                            </div>
+                            <div class="quick-pick-item" onclick="quickSearch('workout music')">
+                                <div class="quick-pick-icon">
+                                    <i class="fas fa-dumbbell"></i>
+                                </div>
+                                <span>Workout</span>
+                            </div>
+                            <div class="quick-pick-item" onclick="quickSearch('focus music')">
+                                <div class="quick-pick-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <span>Focus</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="recent-section" id="recentSection">
+                        <h2 class="section-title">Recently played</h2>
+                        <div class="recent-tracks" id="recentTracks">
+                            <div class="empty-state">
+                                <i class="fas fa-music"></i>
+                                <p>Start listening to see your recent tracks here</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Search Results View -->
+                <div id="searchView" class="view">
+                    <div class="search-header">
+                        <h1 class="page-title">Search Results</h1>
+                    </div>
+                    
+                    <div id="loadingSpinner" class="loading-spinner hidden">
+                        <div class="spinner"></div>
+                        <p>Searching for music...</p>
+                    </div>
+                    
+                    <div id="resultsContainer" class="results-container"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Player -->
+        <div id="playerSection" class="bottom-player hidden">
+            <div class="player-track-info">
+                <img id="playerThumbnail" src="" alt="Track" class="track-thumbnail">
+                <div class="track-details">
+                    <div class="track-title" id="playerTitle">No track selected</div>
+                    <div class="track-artist" id="playerStatus">Ready to play</div>
+                </div>
+                <button class="like-btn" id="likeBtn">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+            
+            <div class="player-controls">
+                <div class="control-buttons">
+                    <button class="control-btn" id="shuffleBtn">
+                        <i class="fas fa-random"></i>
+                    </button>
+                    <button class="control-btn" id="prevBtn">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button class="control-btn play-pause" id="playPauseBtn">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="control-btn" id="nextBtn">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="control-btn" id="repeatBtn">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+                
+                <div class="progress-container">
+                    <span class="time-display" id="currentTime">0:00</span>
+                    <div class="progress-bar">
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progressFill"></div>
+                            <div class="progress-handle" id="progressHandle"></div>
+                        </div>
+                    </div>
+                    <span class="time-display" id="totalTime">0:00</span>
+                </div>
+            </div>
+            
+            <div class="player-actions">
+                <button class="action-btn" id="queueBtn" title="Queue">
+                    <i class="fas fa-list"></i>
+                </button>
+                <button class="action-btn" id="deviceBtn" title="Connect to device">
+                    <i class="fas fa-desktop"></i>
+                </button>
+                <div class="volume-control">
+                    <button class="action-btn" id="volumeBtn">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <div class="volume-slider">
+                        <input type="range" id="volumeSlider" min="0" max="100" value="100">
+                    </div>
+                </div>
+                <button class="action-btn" id="downloadBtn" title="Download">
+                    <i class="fas fa-download"></i>
+                </button>
+                <button class="action-btn" id="shareBtn" title="Share">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+                <button class="action-btn" id="closePlayer" title="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <audio id="audioPlayer" preload="metadata"></audio>
+        </div>
+
+        <!-- Notification Toast -->
+        <div id="notification" class="notification hidden">
+            <div class="notification-content">
+                <i class="notification-icon"></i>
+                <span class="notification-text"></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
